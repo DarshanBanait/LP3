@@ -19,6 +19,3 @@ contract Bank{
         return balance[msg.sender];
     }
 }
-
-
-Website: https://remix.ethereum.org/

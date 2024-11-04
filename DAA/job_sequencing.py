@@ -33,7 +33,6 @@ def printJobScheduling(arr, t):
     print("Job sequence:", job)
     print("Total profit:", total_profit)
 
-# Driver's Code
 if __name__ == '__main__':
     n = int(input("Enter the number of jobs: "))
     arr = []
@@ -47,7 +46,6 @@ if __name__ == '__main__':
     max_deadline = max(job[1] for job in arr)
     print("Following is maximum profit sequence of jobs")
 
-    # Function Call
     printJobScheduling(arr, max_deadline)
 
 # Sample I/O

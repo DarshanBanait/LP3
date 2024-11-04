@@ -1,29 +1,25 @@
-# Define a class to represent items with value and weight
 class Item:
     def __init__(self, value, weight):
         self.value = value
         self.weight = weight
-        self.ratio = value / weight  # Value-to-weight ratio
+        self.ratio = value / weight
 
-# Function to solve the fractional knapsack problem
 def fractional_knapsack(capacity, items):
-    # Sort items by value-to-weight ratio in descending order
+
     items.sort(key=lambda item: item.ratio, reverse=True)
     
-    total_value = 0  # Initialize total value in the knapsack
+    total_value = 0
     
     for item in items:
-        if capacity <= 0:  # If the knapsack is full, break
+        if capacity <= 0:
             break
-        
-        # If the item can be added in full
+
         if item.weight <= capacity:
-            total_value += item.value  # Add full value of the item
-            capacity -= item.weight  # Reduce the remaining capacity
+            total_value += item.value
+            capacity -= item.weight
         else:
-            # If the item can't be added fully, take the fractional part
             total_value += item.ratio * capacity  
-            capacity = 0  # The knapsack is now full
+            capacity = 0  
     
     return total_value
 

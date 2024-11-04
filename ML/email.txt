@@ -1,0 +1,88 @@
+import pandas as pd
+import matplotlib.pyplot  as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
+
+df = pd.read_csv('emails.csv')
+
+print("First few rows of the DataFrame:\n", df.head())
+print("\nColumn names:\n", df.columns)
+
+
+
+# Exclude 'Email No.' column and 'Prediction' column from features
+X = df.drop(columns=['Email No.', 'Prediction'])
+y = df['Prediction']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# K-Nearest Neighbors (KNN)
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+y_pred_knn = knn.predict(X_test)
+
+# Support Vector Machine (SVM)
+svm = SVC(kernel='linear')
+svm.fit(X_train, y_train)
+y_pred_svm = svm.predict(X_test)
+
+
+
+print("\nK-Nearest Neighbors (KNN) Performance:")
+print("Accuracy:", accuracy_score(y_test, y_pred_knn))
+print("Classification Report:\n", classification_report(y_test, y_pred_knn))
+
+print("\nSupport Vector Machine (SVM) Performance:")
+print("Accuracy:", accuracy_score(y_test, y_pred_svm))
+print("Classification Report:\n", classification_report(y_test, y_pred_svm))
+
+
+
+# Combine the actual and predicted labels with email indices for better clarity
+results_knn = pd.DataFrame({
+    'Email No.': df.loc[X_test.index, 'Email No.'],
+    'Actual': y_test,
+    'Predicted (KNN)': y_pred_knn
+})
+
+results_svm = pd.DataFrame({
+    'Email No.': df.loc[X_test.index, 'Email No.'],
+    'Actual': y_test,
+    'Predicted (SVM)': y_pred_svm
+})
+
+
+
+print("\nK-Nearest Neighbors (KNN) Predictions vs Actual:")
+print(results_knn.head())
+print("\nSupport Vector Machine (SVM) Predictions vs Actual:")
+print(results_svm.head())
+
+
+
+# Create confusion matrices
+cm_knn = confusion_matrix(y_test, y_pred_knn)
+cm_svm = confusion_matrix(y_test, y_pred_svm)
+
+# Plotting the confusion matrix for KNN
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+sns.heatmap(cm_knn, annot=True, fmt='d', cmap='Blues', xticklabels=['Not Spam', 'Spam'], yticklabels=['Not Spam', 'Spam'])
+plt.title('Confusion Matrix for KNN')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+
+# Plotting the confusion matrix for SVM
+plt.subplot(1, 2, 2)
+sns.heatmap(cm_svm, annot=True, fmt='d', cmap='Blues', xticklabels=['Not Spam', 'Spam'], yticklabels=['Not Spam', 'Spam'])
+plt.title('Confusion Matrix for SVM')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+
+plt.tight_layout()
+plt.show()

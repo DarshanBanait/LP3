@@ -1,0 +1,79 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.metrics import accuracy_score, confusion_matrix
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+
+url = "Churn_Modelling.csv"
+data = pd.read_csv(url)
+
+print(data.head())
+print(data.columns)
+
+
+
+# Drop CustomerId, Surname, and RowNumber columns
+X = data.drop(columns=['CustomerId', 'Surname', 'RowNumber', 'Exited'])
+y = data['Exited']
+
+# Convert categorical variables into dummy/indicator variables
+X = pd.get_dummies(X, drop_first=True)
+
+# Feature Engineering: Adding polynomial features
+poly = PolynomialFeatures(degree=2, include_bias=False)
+X_poly = poly.fit_transform(X)
+
+X_train, X_test, y_train, y_test = train_test_split(X_poly, y, test_size=0.2, random_state=42)
+
+
+
+# Normalize the train and test data
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+
+
+# Initialize and build the model with improvements
+model = Sequential([
+    Dense(64, input_dim=X_train.shape[1], activation='relu'),
+    Dropout(0.3),
+    Dense(32, activation='relu'),
+    Dropout(0.3),
+    Dense(16, activation='relu'),
+    Dropout(0.3),
+    Dense(1, activation='sigmoid')
+])
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+# Fit the model with increased epochs and validation split
+model.fit(X_train, y_train, epochs=100, batch_size=32, validation_split=0.2)
+
+
+
+# Print the accuracy score and confusion matrix
+y_pred = (model.predict(X_test) > 0.5).astype("int32")
+
+accuracy = accuracy_score(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+print(f"Accuracy: {accuracy}")
+print("Confusion Matrix:")
+print(conf_matrix)
+
+
+
+# 6. Print the predicted results for each customer
+def interpret_prediction(prediction):
+    return "Exit" if prediction == 1 else "Stay"
+
+# Get predictions for all customers in the test set once
+predicted_probabilities = model.predict(X_test)
+
+# Print the results for the first 10 customers in the test set
+for i in range(25):
+    print(f"Customer {i + 1}: Probability of exit = {predicted_probabilities[i][0]:.2f}, Predicted: {interpret_prediction(y_pred[i][0])}")

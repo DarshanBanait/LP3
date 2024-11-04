@@ -1,0 +1,62 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+
+df = pd.read_csv("sales_data_sample.csv", encoding='ISO-8859-1')
+df.head()
+
+
+
+features = df[['SALES', 'QUANTITYORDERED']]
+features = features.dropna()
+# Standardize the features
+scaler = StandardScaler()
+scaled_features = scaler.fit_transform(features)
+
+# Use PCA to reduce to 2 dimensions for easy visualization
+pca = PCA(n_components=2)
+pca_features = pca.fit_transform(scaled_features)
+
+
+
+# Determine the optimal number of clusters using the Elbow Method
+wcss = []  # Within-cluster sum of squares
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters=i, random_state=0)
+    kmeans.fit(scaled_features)
+    wcss.append(kmeans.inertia_)
+
+# Plot the Elbow Method graph
+plt.figure(figsize=(10, 6))
+plt.plot(range(1, 11), wcss, marker='o', linestyle='--')
+plt.title('Elbow Method for Optimal K')
+plt.xlabel('Number of Clusters')
+plt.ylabel('WCSS')
+plt.show()
+
+
+
+# From the elbow plot, choose the optimal number of clusters
+# For example, let's say the elbow shows an optimal k of 3
+
+# Apply K-Means Clustering with the chosen number of clusters
+kmeans = KMeans(n_clusters=3, random_state=0)
+cluster_labels = kmeans.fit_predict(scaled_features)
+
+# Add cluster labels to the original data
+df['Cluster'] = cluster_labels
+
+# Visualize the clusters in a 2D scatter plot
+plt.figure(figsize=(10, 6))
+plt.scatter(pca_features[:, 0], pca_features[:, 1], c=cluster_labels, cmap='viridis')
+plt.xlabel('PCA Component 1')
+plt.ylabel('PCA Component 2')
+plt.title('K-Means Clustering Visualization')
+plt.colorbar(label='Cluster')
+plt.show()
+
+# Display a few rows of the dataset with the cluster labels
+df.head()
