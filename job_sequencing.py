@@ -49,3 +49,21 @@ if __name__ == '__main__':
 
     # Function Call
     printJobScheduling(arr, max_deadline)
+
+# Sample I/O
+# Enter the number of jobs: 4
+# Enter job ID for job 1: A
+# Enter deadline for job 1: 1
+# Enter profit for job 1: 100
+# Enter job ID for job 2: B
+# Enter deadline for job 2: 2
+# Enter profit for job 2: 50
+# Enter job ID for job 3: C
+# Enter deadline for job 3: 3
+# Enter profit for job 3: 200
+# Enter job ID for job 4: D
+# Enter deadline for job 4: 4
+# Enter profit for job 4: 70
+# Following is maximum profit sequence of jobs
+# Job sequence: ['B', 'A', 'D', 'C']
+# Total profit: 250
