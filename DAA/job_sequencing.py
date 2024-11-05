@@ -48,6 +48,9 @@ if __name__ == '__main__':
 
     printJobScheduling(arr, max_deadline)
 
+# Time Complexity: (O(n^2))
+# Space Complexity: (O(t + n))
+
 # Sample I/O
 # Enter the number of jobs: 4
 # Enter job ID for job 1: A

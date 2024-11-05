@@ -36,3 +36,6 @@ capacity = float(input("Enter the capacity of the knapsack: "))
 max_value = fractional_knapsack(capacity, items)
 
 print(f"The maximum value that can be carried in the knapsack is: {max_value:.2f}")
+
+# Time Complexity: (O(n \log n))
+# Space Complexity: (O(n))
