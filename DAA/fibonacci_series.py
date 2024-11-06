@@ -21,8 +21,10 @@ print(f"Iterative: The {n}th Fibonacci number is: {fib_number} (calculated in {i
 def fibonacci_recursive(n, recursive_steps):
     recursive_steps[0] += 1  # Increment shared step counter for each call
     if n == 1:
+        recursive_steps[0] += 1
         return 0
     elif n == 2:
+        recursive_steps[0] += 1
         return 1
     else:
         return fibonacci_recursive(n - 1, recursive_steps) + fibonacci_recursive(n - 2, recursive_steps)
