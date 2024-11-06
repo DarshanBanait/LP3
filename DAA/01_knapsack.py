@@ -36,3 +36,5 @@ max_value = knapsack(max_capacity, weights, values, n)
 print(f"The maximum value that can be obtained is: {max_value}")
 
 # Time Complexity: (O(n * C)) Where (n) is the number of items and (W) is the maximum capacity of the knapsack.
+
+# formula => v[i][w] = max(v[i-1][w], v[i-1][w-wt[i]] + profit[i]) if w >= wt[i] , i is row, w is column
